@@ -9,8 +9,8 @@
     <Grid>
         <StackPanel>
             <Label Content="Фильтр"/>
-            <TextBox/>
-            <ListBox x:Name="groups" ItemsSource="{Binding Grops}" DisplayMemberPath="Name"/>
+            <TextBox x:Name="filterTextBox" TextChanged="filterTextBox_TextChanged_1" />
+            <ListBox x:Name="groups" ItemsSource="{Binding Groups}" DisplayMemberPath="Name" IsSynchronizedWithCurrentItem="False"/>
         </StackPanel>
     </Grid>
 </Window>

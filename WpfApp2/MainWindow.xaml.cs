@@ -12,8 +12,6 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using ClassLibrary2;
-
 namespace WpfApp2
 {
     /// <summary>
@@ -24,20 +22,23 @@ namespace WpfApp2
         public MainWindow()
         {
             InitializeComponent();
-            User.CreateAdmin();
         }
 
         private void log_Button_Click(object sender, RoutedEventArgs e)
         {
-            User user = User.LogIn(login_TextBox.Text, password_PasswordBox.Password);
-            if (user == null)
-                MessageBox.Show("Wrong login or password");
-            else
+            using (var db = new Entities())
             {
-                Hide();
-                Journal journal = new Journal();
-                journal.ShowDialog();
-                Show();
+                var users = db.User.ToList().Where(u => u.UserName == login_TextBox.Text && u.Password == password_PasswordBox.Password);
+                if (users.Count() == 0)
+                    MessageBox.Show("Wrong login or password");
+                else
+                {
+                    Singletone.CurrentUser = users.First();
+                    Hide();
+                    Journal journal = new Journal();
+                    journal.ShowDialog();
+                    Show();
+                }
             }
         }
     }
