@@ -1,0 +1,34 @@
+﻿<Window x:Class="WpfApp2.JournalWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WpfApp2"
+        mc:Ignorable="d"
+        Title="JournalWindow" Height="450" Width="800">
+
+    <Grid>
+        <TabControl>
+            <TabItem Header="Оценки">
+                <DataGrid ItemsSource="{Binding StudentGrade}" x:Name="JournalGrid">
+                    <DataGrid.Columns>
+                        <DataGridTemplateColumn Header="Студенты">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal" DataContext="{Binding Student}">
+                                        <Label Content="{Binding FirstName}"/>
+                                        <Label Content="{Binding LastName}"/>
+                                        <Label Content="{Binding Patronomic}"/>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </TabItem>
+            <TabItem Header="Темы">
+                
+            </TabItem>
+        </TabControl>
+    </Grid>
+</Window>

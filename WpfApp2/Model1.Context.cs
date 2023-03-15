@@ -30,5 +30,9 @@ namespace WpfApp2
         public virtual DbSet<Journal> Journal { get; set; }
         public virtual DbSet<Special> Special { get; set; }
         public virtual DbSet<User> User { get; set; }
+        public virtual DbSet<Student> Student { get; set; }
+        public virtual DbSet<Grade> Grade { get; set; }
+        public virtual DbSet<Lesson> Lesson { get; set; }
+        public virtual DbSet<StudentGrade> StudentGrade { get; set; }
     }
 }

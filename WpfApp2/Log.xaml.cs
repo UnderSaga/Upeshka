@@ -18,29 +18,36 @@ namespace WpfApp2
     /// <summary>
     /// Логика взаимодействия для Journal.xaml
     /// </summary>
-    public partial class Journal : Window
+    public partial class Log : Window
     {
-        public ObservableCollection<Group> Groups = new ObservableCollection<Group>();
-        public Journal()
+        public Log()
         {
             InitializeComponent();
             using (var db = new Entities())
             {
-                Singletone.CurrentUser.Journal.ToList().ForEach(j => groups.Items.Add(j.Group1));
+                Session.CurrentUser.Journal.ToList().ForEach(j => groups.Items.Add(j.Group1));
             }    
         }
 
-        private void filterTextBox_TextChanged_1(object sender, TextChangedEventArgs e)
+        private void filterTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             groups.Items.Clear();
             using (var db = new Entities())
             {
                 db.Group.ToList().ForEach(group =>
                 {
-                    if (group.Name.Contains(filterTextBox.Text))
+                    if(group.Name.Contains(filterTextBox.Text))
                         groups.Items.Add(group);
                 });
             }
+        }
+        private void groups_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            Session.CurrentGroup = groups.SelectedItem as Group;
+            GroupWindow groupWindow = new GroupWindow();
+            Hide();
+            groupWindow.ShowDialog();
+            Show();
         }
     }
 }

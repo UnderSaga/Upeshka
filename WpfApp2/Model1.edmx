@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="Хранилище Model" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="Хранилище Model" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="Discipline">
           <Key>
             <PropertyRef Name="ID" />
@@ -12,6 +12,12 @@
           <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Name" Type="nvarchar" MaxLength="100" Nullable="false" />
           <Property Name="Ship" Type="nvarchar" MaxLength="10" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Grade">
+          <Key>
+            <PropertyRef Name="Value" />
+          </Key>
+          <Property Name="Value" Type="nvarchar" MaxLength="5" Nullable="false" />
         </EntityType>
         <EntityType Name="Group">
           <Key>
@@ -33,6 +39,17 @@
           <Property Name="Teacher" Type="int" Nullable="false" />
           <Property Name="Discipline" Type="int" Nullable="false" />
         </EntityType>
+        <EntityType Name="Lesson">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="JournalID" Type="int" Nullable="false" />
+          <Property Name="Date" Type="date" Nullable="false" />
+          <Property Name="CountOfHours" Type="int" Nullable="false" />
+          <Property Name="Theme" Type="nvarchar" MaxLength="200" Nullable="false" />
+          <Property Name="Homework" Type="nvarchar" MaxLength="200" Nullable="false" />
+        </EntityType>
         <EntityType Name="Special">
           <Key>
             <PropertyRef Name="ID" />
@@ -40,6 +57,28 @@
           <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Code" Type="nvarchar" MaxLength="1" Nullable="false" />
           <Property Name="Name" Type="nvarchar" MaxLength="100" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Student">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="FirstName" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="LastName" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="Patronomic" Type="nvarchar" MaxLength="100" />
+          <Property Name="GroupID" Type="int" Nullable="false" />
+        </EntityType>
+        <!--Ошибки, обнаруженные при создании:
+предупреждение 6002: В таблице или представлении "УП_01.01_3-П9.dbo.StudentGrade" не определен первичный ключ. Ключ был выведен, а определение таблицы или представления было создано в режиме только для чтения.-->
+        <EntityType Name="StudentGrade">
+          <Key>
+            <PropertyRef Name="StudentID" />
+            <PropertyRef Name="GradeID" />
+            <PropertyRef Name="LessonID" />
+          </Key>
+          <Property Name="StudentID" Type="int" Nullable="false" />
+          <Property Name="GradeID" Type="nvarchar" MaxLength="5" Nullable="false" />
+          <Property Name="LessonID" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="User">
           <Key>
@@ -97,12 +136,82 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_Lesson_Journal">
+          <End Role="Journal" Type="Self.Journal" Multiplicity="1" />
+          <End Role="Lesson" Type="Self.Lesson" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Journal">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Lesson">
+              <PropertyRef Name="JournalID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Student_Group">
+          <End Role="Group" Type="Self.Group" Multiplicity="1" />
+          <End Role="Student" Type="Self.Student" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Group">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Student">
+              <PropertyRef Name="GroupID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_StudentGrade_Grade">
+          <End Role="Grade" Type="Self.Grade" Multiplicity="1" />
+          <End Role="StudentGrade" Type="Self.StudentGrade" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Grade">
+              <PropertyRef Name="Value" />
+            </Principal>
+            <Dependent Role="StudentGrade">
+              <PropertyRef Name="GradeID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_StudentGrade_Journal">
+          <End Role="Journal" Type="Self.Journal" Multiplicity="1" />
+          <End Role="StudentGrade" Type="Self.StudentGrade" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Journal">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="StudentGrade">
+              <PropertyRef Name="LessonID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_StudentGrade_Student">
+          <End Role="Student" Type="Self.Student" Multiplicity="1" />
+          <End Role="StudentGrade" Type="Self.StudentGrade" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Student">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="StudentGrade">
+              <PropertyRef Name="StudentID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <EntityContainer Name="Хранилище ModelContainer">
           <EntitySet Name="Discipline" EntityType="Self.Discipline" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Grade" EntityType="Self.Grade" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Group" EntityType="Self.Group" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Journal" EntityType="Self.Journal" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Lesson" EntityType="Self.Lesson" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Special" EntityType="Self.Special" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Student" EntityType="Self.Student" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="User" EntityType="Self.User" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="StudentGrade" EntityType="Self.StudentGrade" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [StudentGrade].[StudentID] AS [StudentID], 
+    [StudentGrade].[GradeID] AS [GradeID], 
+    [StudentGrade].[LessonID] AS [LessonID]
+    FROM [dbo].[StudentGrade] AS [StudentGrade]</DefiningQuery>
+          </EntitySet>
           <AssociationSet Name="FK_Group_Special" Association="Self.FK_Group_Special">
             <End Role="Special" EntitySet="Special" />
             <End Role="Group" EntitySet="Group" />
@@ -119,9 +228,28 @@
             <End Role="User" EntitySet="User" />
             <End Role="Journal" EntitySet="Journal" />
           </AssociationSet>
+          <AssociationSet Name="FK_Lesson_Journal" Association="Self.FK_Lesson_Journal">
+            <End Role="Journal" EntitySet="Journal" />
+            <End Role="Lesson" EntitySet="Lesson" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Student_Group" Association="Self.FK_Student_Group">
+            <End Role="Group" EntitySet="Group" />
+            <End Role="Student" EntitySet="Student" />
+          </AssociationSet>
+          <AssociationSet Name="FK_StudentGrade_Grade" Association="Self.FK_StudentGrade_Grade">
+            <End Role="Grade" EntitySet="Grade" />
+            <End Role="StudentGrade" EntitySet="StudentGrade" />
+          </AssociationSet>
+          <AssociationSet Name="FK_StudentGrade_Journal" Association="Self.FK_StudentGrade_Journal">
+            <End Role="Journal" EntitySet="Journal" />
+            <End Role="StudentGrade" EntitySet="StudentGrade" />
+          </AssociationSet>
+          <AssociationSet Name="FK_StudentGrade_Student" Association="Self.FK_StudentGrade_Student">
+            <End Role="Student" EntitySet="Student" />
+            <End Role="StudentGrade" EntitySet="StudentGrade" />
+          </AssociationSet>
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="Model" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -146,6 +274,7 @@
           <Property Name="Name" Type="String" MaxLength="10" FixedLength="false" Unicode="true" Nullable="false" />
           <NavigationProperty Name="Special1" Relationship="Self.FK_Group_Special" FromRole="Group" ToRole="Special" />
           <NavigationProperty Name="Journal" Relationship="Self.FK_Journal_Group" FromRole="Group" ToRole="Journal" />
+          <NavigationProperty Name="Student" Relationship="Model.FK_Student_Group" FromRole="Group" ToRole="Student" />
         </EntityType>
         <EntityType Name="Journal">
           <Key>
@@ -158,6 +287,8 @@
           <NavigationProperty Name="Discipline1" Relationship="Self.FK_Journal_Discipline" FromRole="Journal" ToRole="Discipline" />
           <NavigationProperty Name="Group1" Relationship="Self.FK_Journal_Group" FromRole="Journal" ToRole="Group" />
           <NavigationProperty Name="User" Relationship="Self.FK_Journal_User" FromRole="Journal" ToRole="User" />
+          <NavigationProperty Name="Lesson" Relationship="Model.FK_Lesson_Journal" FromRole="Journal" ToRole="Lesson" />
+          <NavigationProperty Name="StudentGrade" Relationship="Model.FK_StudentGrade_Journal" FromRole="Journal" ToRole="StudentGrade" />
         </EntityType>
         <EntityType Name="Special">
           <Key>
@@ -247,7 +378,135 @@
             <End Role="User" EntitySet="User" />
             <End Role="Journal" EntitySet="Journal" />
           </AssociationSet>
+          <EntitySet Name="Student" EntityType="Model.Student" />
+          <AssociationSet Name="FK_Student_Group" Association="Model.FK_Student_Group">
+            <End Role="Group" EntitySet="Group" />
+            <End Role="Student" EntitySet="Student" />
+          </AssociationSet>
+          <EntitySet Name="Grade" EntityType="Model.Grade" />
+          <EntitySet Name="Lesson" EntityType="Model.Lesson" />
+          <EntitySet Name="StudentGrade" EntityType="Model.StudentGrade" />
+          <AssociationSet Name="FK_StudentGrade_Grade" Association="Model.FK_StudentGrade_Grade">
+            <End Role="Grade" EntitySet="Grade" />
+            <End Role="StudentGrade" EntitySet="StudentGrade" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Lesson_Journal" Association="Model.FK_Lesson_Journal">
+            <End Role="Journal" EntitySet="Journal" />
+            <End Role="Lesson" EntitySet="Lesson" />
+          </AssociationSet>
+          <AssociationSet Name="FK_StudentGrade_Journal" Association="Model.FK_StudentGrade_Journal">
+            <End Role="Journal" EntitySet="Journal" />
+            <End Role="StudentGrade" EntitySet="StudentGrade" />
+          </AssociationSet>
+          <AssociationSet Name="FK_StudentGrade_Student" Association="Model.FK_StudentGrade_Student">
+            <End Role="Student" EntitySet="Student" />
+            <End Role="StudentGrade" EntitySet="StudentGrade" />
+          </AssociationSet>
         </EntityContainer>
+        <EntityType Name="Student">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="FirstName" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="LastName" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Patronomic" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="GroupID" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Group" Relationship="Model.FK_Student_Group" FromRole="Student" ToRole="Group" />
+          <NavigationProperty Name="StudentGrade" Relationship="Model.FK_StudentGrade_Student" FromRole="Student" ToRole="StudentGrade" />
+        </EntityType>
+        <Association Name="FK_Student_Group">
+          <End Type="Model.Group" Role="Group" Multiplicity="1" />
+          <End Type="Model.Student" Role="Student" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Group">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Student">
+              <PropertyRef Name="GroupID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="Grade">
+          <Key>
+            <PropertyRef Name="Value" />
+          </Key>
+          <Property Name="Value" Type="String" Nullable="false" MaxLength="5" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="StudentGrade" Relationship="Model.FK_StudentGrade_Grade" FromRole="Grade" ToRole="StudentGrade" />
+        </EntityType>
+        <EntityType Name="Lesson">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="JournalID" Type="Int32" Nullable="false" />
+          <Property Name="Date" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="CountOfHours" Type="Int32" Nullable="false" />
+          <Property Name="Theme" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="Homework" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Journal" Relationship="Model.FK_Lesson_Journal" FromRole="Lesson" ToRole="Journal" />
+        </EntityType>
+        <EntityType Name="StudentGrade">
+          <Key>
+            <PropertyRef Name="StudentID" />
+            <PropertyRef Name="GradeID" />
+            <PropertyRef Name="LessonID" />
+          </Key>
+          <Property Name="StudentID" Type="Int32" Nullable="false" />
+          <Property Name="GradeID" Type="String" Nullable="false" MaxLength="5" FixedLength="false" Unicode="true" />
+          <Property Name="LessonID" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Grade" Relationship="Model.FK_StudentGrade_Grade" FromRole="StudentGrade" ToRole="Grade" />
+          <NavigationProperty Name="Journal" Relationship="Model.FK_StudentGrade_Journal" FromRole="StudentGrade" ToRole="Journal" />
+          <NavigationProperty Name="Student" Relationship="Model.FK_StudentGrade_Student" FromRole="StudentGrade" ToRole="Student" />
+        </EntityType>
+        <Association Name="FK_StudentGrade_Grade">
+          <End Type="Model.Grade" Role="Grade" Multiplicity="1" />
+          <End Type="Model.StudentGrade" Role="StudentGrade" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Grade">
+              <PropertyRef Name="Value" />
+            </Principal>
+            <Dependent Role="StudentGrade">
+              <PropertyRef Name="GradeID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Lesson_Journal">
+          <End Type="Model.Journal" Role="Journal" Multiplicity="1" />
+          <End Type="Model.Lesson" Role="Lesson" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Journal">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Lesson">
+              <PropertyRef Name="JournalID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_StudentGrade_Journal">
+          <End Type="Model.Journal" Role="Journal" Multiplicity="1" />
+          <End Type="Model.StudentGrade" Role="StudentGrade" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Journal">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="StudentGrade">
+              <PropertyRef Name="LessonID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_StudentGrade_Student">
+          <End Type="Model.Student" Role="Student" Multiplicity="1" />
+          <End Type="Model.StudentGrade" Role="StudentGrade" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Student">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="StudentGrade">
+              <PropertyRef Name="StudentID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -300,6 +559,45 @@
                 <ScalarProperty Name="ID" ColumnName="ID" />
                 <ScalarProperty Name="UserName" ColumnName="UserName" />
                 <ScalarProperty Name="Password" ColumnName="Password" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Student">
+            <EntityTypeMapping TypeName="Model.Student">
+              <MappingFragment StoreEntitySet="Student">
+                <ScalarProperty Name="GroupID" ColumnName="GroupID" />
+                <ScalarProperty Name="Patronomic" ColumnName="Patronomic" />
+                <ScalarProperty Name="LastName" ColumnName="LastName" />
+                <ScalarProperty Name="FirstName" ColumnName="FirstName" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Grade">
+            <EntityTypeMapping TypeName="Model.Grade">
+              <MappingFragment StoreEntitySet="Grade">
+                <ScalarProperty Name="Value" ColumnName="Value" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Lesson">
+            <EntityTypeMapping TypeName="Model.Lesson">
+              <MappingFragment StoreEntitySet="Lesson">
+                <ScalarProperty Name="Homework" ColumnName="Homework" />
+                <ScalarProperty Name="Theme" ColumnName="Theme" />
+                <ScalarProperty Name="CountOfHours" ColumnName="CountOfHours" />
+                <ScalarProperty Name="Date" ColumnName="Date" />
+                <ScalarProperty Name="JournalID" ColumnName="JournalID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="StudentGrade">
+            <EntityTypeMapping TypeName="Model.StudentGrade">
+              <MappingFragment StoreEntitySet="StudentGrade">
+                <ScalarProperty Name="LessonID" ColumnName="LessonID" />
+                <ScalarProperty Name="GradeID" ColumnName="GradeID" />
+                <ScalarProperty Name="StudentID" ColumnName="StudentID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

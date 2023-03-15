@@ -5,15 +5,24 @@
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
       <Diagram DiagramId="72f9c57c01e647c1a8ca6a419d007576" Name="Diagram1">
-        <EntityTypeShape EntityType="Model.Discipline" Width="1.5" PointX="5.625" PointY="4.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="Model.Discipline" Width="1.5" PointX="7.25" PointY="3.375" IsExpanded="true" />
         <EntityTypeShape EntityType="Model.Group" Width="1.5" PointX="3" PointY="1" IsExpanded="true" />
         <EntityTypeShape EntityType="Model.Journal" Width="1.5" PointX="5.25" PointY="1.125" IsExpanded="true" />
         <EntityTypeShape EntityType="Model.Special" Width="1.5" PointX="0.75" PointY="1.375" IsExpanded="true" />
-        <EntityTypeShape EntityType="Model.User" Width="1.5" PointX="3" PointY="4.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="Model.User" Width="1.5" PointX="5.25" PointY="4.375" IsExpanded="true" />
         <AssociationConnector Association="Model.FK_Journal_Discipline" ManuallyRouted="false" />
         <AssociationConnector Association="Model.FK_Group_Special" ManuallyRouted="false" />
         <AssociationConnector Association="Model.FK_Journal_Group" ManuallyRouted="false" />
         <AssociationConnector Association="Model.FK_Journal_User" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="Model.Student" Width="1.5" PointX="2.875" PointY="5.5" />
+        <AssociationConnector Association="Model.FK_Student_Group" />
+        <EntityTypeShape EntityType="Model.Grade" Width="1.5" PointX="7.25" PointY="9.875" />
+        <EntityTypeShape EntityType="Model.Lesson" Width="1.5" PointX="7.5" PointY="6.375" />
+        <EntityTypeShape EntityType="Model.StudentGrade" Width="1.5" PointX="9.5" PointY="2.375" />
+        <AssociationConnector Association="Model.FK_StudentGrade_Grade" />
+        <AssociationConnector Association="Model.FK_Lesson_Journal" />
+        <AssociationConnector Association="Model.FK_StudentGrade_Journal" />
+        <AssociationConnector Association="Model.FK_StudentGrade_Student" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

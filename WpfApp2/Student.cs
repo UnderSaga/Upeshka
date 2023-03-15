@@ -12,26 +12,22 @@ namespace WpfApp2
     using System;
     using System.Collections.Generic;
     
-    public partial class Group
+    public partial class Student
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public Group()
+        public Student()
         {
-            this.Journal = new HashSet<Journal>();
-            this.Student = new HashSet<Student>();
+            this.StudentGrade = new HashSet<StudentGrade>();
         }
     
         public int ID { get; set; }
-        public int Special { get; set; }
-        public int SubGroup { get; set; }
-        public int ClassRoom { get; set; }
-        public int StartYear { get; set; }
-        public string Name { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string Patronomic { get; set; }
+        public int GroupID { get; set; }
     
-        public virtual Special Special1 { get; set; }
+        public virtual Group Group { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Journal> Journal { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Student> Student { get; set; }
+        public virtual ICollection<StudentGrade> StudentGrade { get; set; }
     }
 }

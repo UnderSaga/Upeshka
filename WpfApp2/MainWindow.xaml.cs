@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+
 namespace WpfApp2
 {
     /// <summary>
@@ -28,14 +29,14 @@ namespace WpfApp2
         {
             using (var db = new Entities())
             {
-                var users = db.User.ToList().Where(u => u.UserName == login_TextBox.Text && u.Password == password_PasswordBox.Password);
+                var users = db.User.ToList().Where(User => User.UserName == login_TextBox.Text && User.Password == password_PasswordBox.Password);
                 if (users.Count() == 0)
                     MessageBox.Show("Wrong login or password");
                 else
                 {
-                    Singletone.CurrentUser = users.First();
+                    Session.CurrentUser = users.First();
                     Hide();
-                    Journal journal = new Journal();
+                    Log journal = new Log();
                     journal.ShowDialog();
                     Show();
                 }

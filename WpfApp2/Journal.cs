@@ -14,6 +14,13 @@ namespace WpfApp2
     
     public partial class Journal
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public Journal()
+        {
+            this.Lesson = new HashSet<Lesson>();
+            this.StudentGrade = new HashSet<StudentGrade>();
+        }
+    
         public int ID { get; set; }
         public int Group { get; set; }
         public int Teacher { get; set; }
@@ -22,5 +29,9 @@ namespace WpfApp2
         public virtual Discipline Discipline1 { get; set; }
         public virtual Group Group1 { get; set; }
         public virtual User User { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Lesson> Lesson { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<StudentGrade> StudentGrade { get; set; }
     }
 }
